@@ -28,7 +28,7 @@ Therefore, the GPS information is decomposed into two data packets and transmitt
 
 #### GPS Part.1
 
-GPS Part.1 contains **Longitude** / **Latitude** / **Altitude** / **Fix quality**
+GPS Part.1 contains **Longitude** / **Latitude** / **Altitude** / **Fix quality**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -41,7 +41,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 #### GPS Part.2
 
-GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **speed** / **Track angle** / **HDOP** / **Tracked Satellites**
+GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **speed** / **Track angle** / **HDOP** / **Tracked Satellites**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
