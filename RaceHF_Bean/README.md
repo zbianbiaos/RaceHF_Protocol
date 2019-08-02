@@ -8,8 +8,8 @@
 ## GPS Packet Protocol
 
 > AdvData & DevName:   Race_XXXX (XXXX represents 4 hexadecimal numbers)  
-> Service UUID：       0000FFF0-0000-1000-8000-00805F9B34FB  
-> Characteristic UUID：0000FFF1-0000-1000-8000-00805F9B34FB
+> Service UUID：       0000AAA0-0000-1000-8000-00805F9B34FB  
+> Characteristic UUID：0000AAA1-0000-1000-8000-00805F9B34FB
 
 Bean product is compatible with **Bluetooth 4.0** protocol (MTU=23),
 the data packet is fixed to **20 bytes** The first byte of a packet indicates the packet type.
