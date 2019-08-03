@@ -2,8 +2,8 @@
 
 ## 概述
 
-\[[English](https://github.com/zbianbiaos/RaceHF_Protocol/blob/master/RaceHF_Bean/README.md)\]
-[[中文](https://github.com/zbianbiaos/RaceHF_Protocol/blob/master/RaceHF_Bean/README_zh.md)\]
+\[[English](README.md)\]
+[[中文](README_zh.md)\]
 
 Bean项目是RaceHF下的一个面向大众赛车的产品，产品主要服务于业余赛车爱好者，为广大车友们提供一个融合软硬件平台的优质服务产品。
 
@@ -84,7 +84,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 > Hardware Version 使用4字节表示硬件版本，4字节中每个字节表示一个版本主次信息  
 > 示例如下：
-> 0x01020304可以拆分成0x01 0x02 0x03 0x04:  
+> 0x01020304可以拆分成0x01 0x02 0x03 0x04  
 > 表示版本信息是V1.2.3.4
 
 ***
