@@ -2,12 +2,12 @@
 
 This is a documentation project that RaceHF provides to APP developers to facilitate compatibility with RaceHF hardware.
 
-## RaceHF Bean(For Amateur racer)
+## RaceHF Bean(For Amateur Racer)
 
 \[[English](RaceHF_Bean/README.md)\]
 [[中文](RaceHF_Bean/README_zh.md)\]
 
-## RaceHF Kart(For Professional racer)
+## RaceHF Kart(For Professional Racer)
 
 ## Feedback
 
