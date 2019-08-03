@@ -2,8 +2,8 @@
 
 ## Overview
 
-\[[English](https://github.com/zbianbiaos/RaceHF_Protocol/blob/master/RaceHF_Bean/README.md)\]
-[[中文](https://github.com/zbianbiaos/RaceHF_Protocol/blob/master/RaceHF_Bean/README_zh.md)\]
+\[[English](README.md)\]
+[[中文](README_zh.md)\]
 
 ## GPS Packet Protocol
 
