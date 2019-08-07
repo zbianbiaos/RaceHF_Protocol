@@ -9,6 +9,9 @@ This is a documentation project that RaceHF provides to APP developers to facili
 
 ## RaceHF Kart(For Professional Racer)
 
+\[[English](RaceHF_Kart/README.md)\]
+[[中文](RaceHF_Kart/README_zh.md)\]
+
 ## Feedback
 
 If you have any questions during the development process, please contact us.
