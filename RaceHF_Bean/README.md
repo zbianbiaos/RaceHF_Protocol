@@ -17,7 +17,7 @@ the data packet is fixed to **20 bytes** The first byte of a packet indicates th
 Index | Type        | Comment
 ---   | ---         | ---
 0x10  | GPS Part.1  | Longitude / Latitude / Altitude / Fix quality
-0x11  | GPS part.2  | UNIX Timestamp / millsecond  / speed / Track angle / HDOP / Tracked Satellites
+0x11  | GPS part.2  | UNIX Timestamp / Millsecond  / Speed / Track Angle / HDOP / Tracked Satellites
 0xA1  | Device      | Hardware Version / Software Version / Battery percentage
 
 ### GPS Part
@@ -42,7 +42,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 #### GPS Part.2
 
-GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **speed** / **Track angle** / **HDOP** / **Tracked Satellites**  
+GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **Speed** / **Track Angle** / **HDOP** / **Tracked Satellites**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
