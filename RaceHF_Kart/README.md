@@ -54,12 +54,12 @@ Byte Index | Content             | Type(bytes) | Comment
 0          | Index               | byte(1)     | = 0x11，Indicates that the packet is Engine
 1          | unix timestamp      | uint32(4)   | Seconds from 1970/1/1 UTC-0 to the present
 5          | millsecond          | uint16(2)   | eg: 0, 100 ,200, ... 900 or higher precision like: 50, 150,950,etc..
-7          | water temp          | float(8)    | WAT unit:celsius
-15         | cylinder head temp  | float(8)    | CHT unit:celsius
-23         | exhaust gas temp    | float(4)    | EGT unit:celsius
-27         | rpm cap interval    | uint16(2)   | rpm capture interval unit:ms
-31         | rpm count           | uint16(2)   | indicate valid rpms in rpm array
-35         | rpm array           | uint16(2*n) | rpm array
+7          | water temp          | float(4)    | WAT unit:celsius
+11         | cylinder head temp  | float(4)    | CHT unit:celsius
+15         | exhaust gas temp    | float(4)    | EGT unit:celsius
+19         | rpm cap interval    | uint16(2)   | rpm capture interval unit:ms
+21         | rpm count           | uint16(2)   | indicate valid rpms in rpm array
+23         | rpm array           | uint16(2*n) | rpm array
 
 > Engine speed array description:  
 > In order to reduce the amount of air packet transmission, the rpms from a certain moment is compressed and sent to a data packet.  

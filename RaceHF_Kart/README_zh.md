@@ -70,12 +70,12 @@ Byte Index | Content             | Type(bytes) | Comment
 0          | Index               | byte(1)     | = 0x21，表示该数据包是GPS
 1          | unix timestamp      | uint32(4)   | UNIX时间戳，从*1970/1/1*以UTC-0作为时间起点
 5          | millsecond          | uint16(2)   | 毫秒数，例如： 0, 100 ,200, ... 900 或者更高经度: 50, 150, 950等
-7          | water temp          | float(8)    | 冷却液温度 单位：摄氏度
-15         | cylinder head temp  | float(8)    | 缸盖温度 单位：摄氏度
-23         | exhaust gas temp    | float(4)    | 排气管温度 单位：摄氏度
-27         | rpm cap interval    | uint16(2)   | 转速采集间隔 单位：毫秒
-31         | rpm count           | uint16(2)   | 转速数组中有效转速数据个数
-35         | rpm array           | uint16(2*n) | 转速数组
+7          | water temp          | float(4)    | 冷却液温度 单位：摄氏度
+11         | cylinder head temp  | float(4)    | 缸盖温度 单位：摄氏度
+15         | exhaust gas temp    | float(4)    | 排气管温度 单位：摄氏度
+19         | rpm cap interval    | uint16(2)   | 转速采集间隔 单位：毫秒
+21         | rpm count           | uint16(2)   | 转速数组中有效转速数据个数
+23         | rpm array           | uint16(2*n) | 转速数组
 
 > 发动机转速数组说明：  
 > 为了降低空中数据包传输量，所以把从某个时刻的多个转速数据压缩到一个数据包中发送出来，  
