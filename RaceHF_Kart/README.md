@@ -57,8 +57,8 @@ Byte Index | Content             | Type(bytes) | Comment
 7          | water temp          | float(8)    | WAT unit:celsius
 15         | cylinder head temp  | float(8)    | CHT unit:celsius
 23         | exhaust gas temp    | float(4)    | EGT unit:celsius
-27         | rpm cap interval    | uint16(4)   | rpm capture interval unit:ms
-31         | rpm count           | uint16(4)   | indicate valid rpms in rpm array
+27         | rpm cap interval    | uint16(2)   | rpm capture interval unit:ms
+31         | rpm count           | uint16(2)   | indicate valid rpms in rpm array
 35         | rpm array           | uint16(2*n) | rpm array
 
 > Engine speed array description:  

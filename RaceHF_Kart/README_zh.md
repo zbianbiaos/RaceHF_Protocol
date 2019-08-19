@@ -73,8 +73,8 @@ Byte Index | Content             | Type(bytes) | Comment
 7          | water temp          | float(8)    | 冷却液温度 单位：摄氏度
 15         | cylinder head temp  | float(8)    | 缸盖温度 单位：摄氏度
 23         | exhaust gas temp    | float(4)    | 排气管温度 单位：摄氏度
-27         | rpm cap interval    | uint16(4)   | 转速采集间隔 单位：毫秒
-31         | rpm count           | uint16(4)   | 转速数组中有效转速数据个数
+27         | rpm cap interval    | uint16(2)   | 转速采集间隔 单位：毫秒
+31         | rpm count           | uint16(2)   | 转速数组中有效转速数据个数
 35         | rpm array           | uint16(2*n) | 转速数组
 
 > 发动机转速数组说明：  
