@@ -67,7 +67,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 #### Engine.Temper
 
-Engine.Rpm contains **UNIX Timestamp** / **millsecond**  / **Water Temperature** / **Cylinder Head Temperature** / **Exhaust Gas Temperature**  
+Engine.Temper contains **UNIX Timestamp** / **millsecond**  / **Water Temperature** / **Cylinder Head Temperature** / **Exhaust Gas Temperature**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment

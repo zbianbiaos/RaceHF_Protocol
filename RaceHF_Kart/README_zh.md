@@ -65,7 +65,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 #### Engine.Rpm
 
-Engine 包含 **UNIX时间戳** / **毫秒** / **发动机转速时间间隔** / **转速有效数据个数** / **发动机转速数组**  
+Engine.Rpm 包含 **UNIX时间戳** / **毫秒** / **发动机转速时间间隔** / **转速有效数据个数** / **发动机转速数组**  
 数据排列方式如下：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -83,7 +83,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 #### Engine.Temper
 
-Engine 包含 **UNIX时间戳** / **毫秒**  / **冷却液温度** / **缸盖温度** / **排气管温度**  
+Engine.Temper 包含 **UNIX时间戳** / **毫秒**  / **冷却液温度** / **缸盖温度** / **排气管温度**  
 数据排列方式如下：
 
 Byte Index | Content             | Type(bytes) | Comment
