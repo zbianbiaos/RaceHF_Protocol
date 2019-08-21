@@ -54,7 +54,7 @@ The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
-0          | Index               | byte(1)     | = 0x11，Indicates that the packet is Engine
+0          | Index               | byte(1)     | = 0x21，Indicates that the packet is Engine.Rpm
 1          | unix timestamp      | uint32(4)   | Seconds from 1970/1/1 UTC-0 to the present
 5          | millsecond          | uint16(2)   | eg: 0, 100 ,200, ... 900 or higher precision like: 50, 150,950,etc..
 7          | rpm cap interval    | uint16(2)   | rpm capture interval unit:ms
@@ -72,7 +72,7 @@ The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
-0          | Index               | byte(1)     | = 0x11，Indicates that the packet is Engine
+0          | Index               | byte(1)     | = 0x22，Indicates that the packet is Engine.Temper
 1          | unix timestamp      | uint32(4)   | Seconds from 1970/1/1 UTC-0 to the present
 5          | millsecond          | uint16(2)   | eg: 0, 100 ,200, ... 900 or higher precision like: 50, 150,950,etc..
 7          | water temp          | float(4)    | WAT unit:celsius
@@ -86,7 +86,7 @@ The data is arranged as follows :
 
 Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
-0          | Index               | byte(1)     | = 0xA0，Indicates that the packet is device information
+0          | Index               | byte(1)     | = 0xA1，Indicates that the packet is device information
 1          | battery percent     | int8(1)     | Battery power percentage, error is -1
 
 ***
