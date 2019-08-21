@@ -21,20 +21,22 @@ Bean项目是RaceHF下的一个面向专业赛车的产品，提供更专业的�
 
 ***
 
-## GPS数据协议
-
 > 广播名&设备名：       RaceHF_XXXX (XXXX表示4个十六进制数)  
 > Service UUID：       0000ABF0-0000-1000-8000-00805F9B34FB  
 > Characteristic UUID：0000ABF1-0000-1000-8000-00805F9B34FB
 
-Kart产品兼容**蓝牙4.2**协议(MTU_MAX=517)，数据包固定为**80字节**一包，
+Kart产品兼容**蓝牙4.2**协议(MTU_MAX=517)，数据包固定为**80字节**一包。
+
+## 主动数据协议
+
+主动数据协议是设备周期性主动发送数据，使用BLE通知方式发送。  
 数据包第一个字节(index)表示该数据包类型。
 
 Index | Type           | Comment
 ---   | ---            | ---
 0x11  | GPS            | UNIX时间戳 / 毫秒 / 经度 / 纬度 / 速度 / 方位角 / HDOP / 海拔高度 / 锁定卫星数 / 定位模式
 0x21  | Engine.Rpm     | UNIX时间戳 / 毫秒 / 发动机转速时间间隔 / 转速有效数据个数 / 发动机转速数组
-0x21  | Engine.Temper  | UNIX时间戳 / 毫秒 / 冷却液温度 / 缸盖温度 / 排气管温度
+0x22  | Engine.Temper  | UNIX时间戳 / 毫秒 / 冷却液温度 / 缸盖温度 / 排气管温度
 0xA1  | Device         | 电池电量
 0x80  | Meaningless    | 无意义数据包
 
@@ -104,6 +106,12 @@ Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
 0          | Index               | byte(1)     | = 0xA1，表示该数据包是Device
 1          | battery percent     | int8(1)     | 电池电量百分比，电量错误-1
+
+***
+
+## 被动数据协议
+
+被动数据协议使用
 
 ***
 

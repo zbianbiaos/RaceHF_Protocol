@@ -5,14 +5,17 @@
 \[[English](README.md)\]
 [[中文](README_zh.md)\]
 
-## GPS Packet Protocol
-
 > AdvData & DevName:   RaceHF_XXXX (XXXX represents 4 hexadecimal numbers)  
 > Service UUID：       0000ABF0-0000-1000-8000-00805F9B34FB  
 > Characteristic UUID：0000ABF1-0000-1000-8000-00805F9B34FB
 
 Kart product is compatible with **Bluetooth 4.2** protocol (MTU_MAX=517),
-the data packet is fixed to **80 bytes** The first byte of a packet indicates the packet type.
+the data packet is fixed to **80 bytes**.
+
+## Active Packet Protocol
+
+The active data protocol is that the device periodically sends data periodically and sends it using BLE notification.  
+The first byte of a packet indicates the packet type.
 
 Index | Type            | Comment
 ---   | ---             | ---
@@ -88,6 +91,10 @@ Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
 0          | Index               | byte(1)     | = 0xA1，Indicates that the packet is device information
 1          | battery percent     | int8(1)     | Battery power percentage, error is -1
+
+***
+
+## Passive Packet Protocol
 
 ***
 
