@@ -14,12 +14,13 @@
 Kart product is compatible with **Bluetooth 4.2** protocol (MTU_MAX=517),
 the data packet is fixed to **80 bytes** The first byte of a packet indicates the packet type.
 
-Index | Type        | Comment
----   | ---         | ---
-0x11  | GPS         | UNIX Timestamp / Millsecond  / Longitude / Latitude / Speed / Track angle / HDOP / Altitude / Tracked Satellites / Fix quality
-0x21  | Engine      | UNIX Timestamp / Millsecond  / Water Temperature / Cylinder Head Temperature / Exhaust Gas Temperature / RPM Capture Interval / Valid RPM count in RPM Array / RPM Array
-0xA1  | Device      | Battery percentage
-0x80  | Meaningless | Meaningless Packet
+Index | Type            | Comment
+---   | ---             | ---
+0x11  | GPS             | UNIX Timestamp / Millsecond / Longitude / Latitude / Speed / Track angle / HDOP / Altitude / Tracked Satellites / Fix quality
+0x21  | Engine.Rpm      | UNIX Timestamp / Millsecond / RPM Capture Interval / Valid RPM count in RPM Array / RPM Array
+0x22  | Engine.Temper   | UNIX Timestamp / Millsecond / Water Temperature / Cylinder Head Temperature / Exhaust Gas Temperature
+0xA1  | Device          | Battery percentage
+0x80  | Meaningless     | Meaningless Packet
 
 ### GPS Part
 
@@ -46,7 +47,27 @@ Byte Index | Content             | Type(bytes) | Comment
 
 ### Engine
 
-Engine contains **UNIX Timestamp** / **millsecond**  / **Water Temperature** / **Cylinder Head Temperature** / **Exhaust Gas Temperature** / **RPM Capture Interval** / **Valid RPM count in RPM Array** / **RPM Array**  
+#### Engine.Rpm
+
+Engine.Rpm contains **UNIX Timestamp** / **millsecond** / **RPM Capture Interval** / **Valid RPM count in RPM Array** / **RPM Array**  
+The data is arranged as follows：
+
+Byte Index | Content             | Type(bytes) | Comment
+---        | ---                 | ---         | ---
+0          | Index               | byte(1)     | = 0x11，Indicates that the packet is Engine
+1          | unix timestamp      | uint32(4)   | Seconds from 1970/1/1 UTC-0 to the present
+5          | millsecond          | uint16(2)   | eg: 0, 100 ,200, ... 900 or higher precision like: 50, 150,950,etc..
+7          | rpm cap interval    | uint16(2)   | rpm capture interval unit:ms
+9          | rpm count           | uint16(2)   | indicate valid rpms in rpm array
+11         | rpm array           | uint16(2*n) | rpm array
+
+> Engine speed array description:  
+> In order to reduce the amount of air packet transmission, the rpms from a certain moment is compressed and sent to a data packet.  
+> rpm cap interval indicates the time interval for each acquisition of the rpm.
+
+#### Engine.Temper
+
+Engine.Rpm contains **UNIX Timestamp** / **millsecond**  / **Water Temperature** / **Cylinder Head Temperature** / **Exhaust Gas Temperature**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -57,13 +78,6 @@ Byte Index | Content             | Type(bytes) | Comment
 7          | water temp          | float(4)    | WAT unit:celsius
 11         | cylinder head temp  | float(4)    | CHT unit:celsius
 15         | exhaust gas temp    | float(4)    | EGT unit:celsius
-19         | rpm cap interval    | uint16(2)   | rpm capture interval unit:ms
-21         | rpm count           | uint16(2)   | indicate valid rpms in rpm array
-23         | rpm array           | uint16(2*n) | rpm array
-
-> Engine speed array description:  
-> In order to reduce the amount of air packet transmission, the rpms from a certain moment is compressed and sent to a data packet.  
-> rpm cap interval indicates the time interval for each acquisition of the rpm.
 
 ### Device
 
