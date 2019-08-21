@@ -29,12 +29,12 @@ Kart产品兼容**蓝牙4.2**协议(MTU_MAX=517)，数据包固定为**80字节*
 
 ## 主动数据协议
 
-主动数据协议是设备周期性主动发送数据，使用BLE通知方式发送。  
+主动数据协议的主要内容是设备使用BLE通知方式周期性主动发送数据。  
 数据包第一个字节(index)表示该数据包类型。
 
 Index | Type           | Comment
 ---   | ---            | ---
-0x11  | GPS            | UNIX时间戳 / 毫秒 / 经度 / 纬度 / 速度 / 方位角 / HDOP / 海拔高度 / 锁定卫星数 / 定位模式
+0x11  | GPS            | UNIX时间戳 / 毫秒 / 经度 / 纬度 / 速度 / 方位角 / HDOP / 海拔高度 / 锁定卫星数 / 定位质量
 0x21  | Engine.Rpm     | UNIX时间戳 / 毫秒 / 发动机转速时间间隔 / 转速有效数据个数 / 发动机转速数组
 0x22  | Engine.Temper  | UNIX时间戳 / 毫秒 / 冷却液温度 / 缸盖温度 / 排气管温度
 0xA1  | Device         | 电池电量
@@ -44,7 +44,7 @@ Index | Type           | Comment
 
 GPS部分包含从GPS中解析得到的数据，
 数据主要从NMEA格式中读取包括经纬度、时间、速度等。  
-按照指定格式排列到结构体中，无内存对齐。
+数据按照指定格式排列到结构体中，无内存对齐。
 
 GPS 包含 **UNIX时间戳** / **毫秒**  / **经度** / **纬度** / **速度** / **方位角** / **HDOP** / **海拔高度** / **锁定卫星数** / **定位模式**  
 数据排列方式如下：
@@ -52,7 +52,7 @@ GPS 包含 **UNIX时间戳** / **毫秒**  / **经度** / **纬度** / **速度*
 Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
 0          | Index               | byte(1)     | = 0x11，表示该数据包是GPS
-1          | unix timestamp      | uint32(4)   | UNIX时间戳，从*1970/1/1*以UTC-0作为时间起点
+1          | unix timestamp      | uint32(4)   | UNIX时间戳，从*1970/1/1*作为时间起点
 5          | millsecond          | uint16(2)   | 毫秒数，例如： 0, 100 ,200, ... 900 或者更高经度: 50, 150, 950等
 7          | longitude           | double(8)   | 经度，例如：12.12345678 或 123.12345678 单位：度
 15         | latitude            | double(8)   | 纬度，例如：12.12345678 or -12.12345678 单位：度
@@ -99,7 +99,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 ### Device
 
-Bean设备信息包含 **电池电量**  
+Kart设备信息包含 **电池电量**  
 数据排列方式如下：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -115,7 +115,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 ***
 
-## 有问题反馈
+## 反馈
 
 在开发中有任何问题，欢迎反馈给我
 
