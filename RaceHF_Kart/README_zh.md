@@ -13,7 +13,7 @@ Bean项目是RaceHF下的一个面向专业赛车的产品，提供更专业的�
 - **BT+BLE+WIFI**融合通讯方式.
 - 优质定位芯片，最高真实刷新率可达**20hz**，专为赛车应用场景优化算法。兼容GPS/GLONASS，内置高灵敏度陶瓷天线，可外接天线
 - 支持**空中固件升级**
-- 支持**SD卡**记录VBO格式文件，把记录的数据导入CTool Track attack等主流的赛车数据分析软件
+- 支持**SD卡**记录VBO格式文件，把记录的数据导入CTool、Track attack等主流的赛车数据分析软件
 - 实现开机即用，不再依赖手机
 - 开放的数据通讯协议，第三方软件开发商快速开发和硬件兼容的APP
 - 支持Andriod与IOS
@@ -29,12 +29,12 @@ Kart产品兼容**蓝牙4.2**协议(MTU_MAX=517)，数据包固定为**80字节*
 
 ## 主动数据协议
 
-主动数据协议的主要内容是设备使用BLE通知方式周期性主动发送数据。  
+主动数据协议是设备周期性主动发送数据，使用BLE通知方式发送。  
 数据包第一个字节(index)表示该数据包类型。
 
 Index | Type           | Comment
 ---   | ---            | ---
-0x11  | GPS            | UNIX时间戳 / 毫秒 / 经度 / 纬度 / 速度 / 方位角 / HDOP / 海拔高度 / 锁定卫星数 / 定位质量
+0x11  | GPS            | UNIX时间戳 / 毫秒 / 经度 / 纬度 / 速度 / 方位角 / HDOP / 海拔高度 / 锁定卫星数 / 定位模式
 0x21  | Engine.Rpm     | UNIX时间戳 / 毫秒 / 发动机转速时间间隔 / 转速有效数据个数 / 发动机转速数组
 0x22  | Engine.Temper  | UNIX时间戳 / 毫秒 / 冷却液温度 / 缸盖温度 / 排气管温度
 0xA1  | Device         | 电池电量
@@ -44,7 +44,7 @@ Index | Type           | Comment
 
 GPS部分包含从GPS中解析得到的数据，
 数据主要从NMEA格式中读取包括经纬度、时间、速度等。  
-数据按照指定格式排列到结构体中，无内存对齐。
+按照指定格式排列到结构体中，无内存对齐。
 
 GPS 包含 **UNIX时间戳** / **毫秒**  / **经度** / **纬度** / **速度** / **方位角** / **HDOP** / **海拔高度** / **锁定卫星数** / **定位模式**  
 数据排列方式如下：
@@ -52,7 +52,7 @@ GPS 包含 **UNIX时间戳** / **毫秒**  / **经度** / **纬度** / **速度*
 Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
 0          | Index               | byte(1)     | = 0x11，表示该数据包是GPS
-1          | unix timestamp      | uint32(4)   | UNIX时间戳，从*1970/1/1*作为时间起点
+1          | unix timestamp      | uint32(4)   | UNIX时间戳，从*1970/1/1*以UTC-0作为时间起点
 5          | millsecond          | uint16(2)   | 毫秒数，例如： 0, 100 ,200, ... 900 或者更高经度: 50, 150, 950等
 7          | longitude           | double(8)   | 经度，例如：12.12345678 或 123.12345678 单位：度
 15         | latitude            | double(8)   | 纬度，例如：12.12345678 or -12.12345678 单位：度
@@ -99,7 +99,7 @@ Byte Index | Content             | Type(bytes) | Comment
 
 ### Device
 
-Kart设备信息包含 **电池电量**  
+Bean设备信息包含 **电池电量**  
 数据排列方式如下：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -111,11 +111,184 @@ Byte Index | Content             | Type(bytes) | Comment
 
 ## 被动数据协议
 
-被动数据协议使用
+被动数据协议使用请求——响应方式传输信息，数据传输协议如下:  
+
+<table>
+    <tr>
+		<td >类</td>
+		<td>项</td>
+		<td>读取/设置(1/0)</td>	
+		<td>6字节无效数据</td>	
+		<td colspan = "3"> 参数(按顺序排列)</td>	
+	</tr>
+	
+	<tr>
+		<td rowspan = "3">版本(0x01) </td>
+			<td>设备型号(0x01)</td>
+			<td>1</td>
+			<td>-</td>
+			<td>字符串(byte[])</td>	
+			<td> </td>	
+			<td> </td>	
+	</tr>
+	<tr>
+			<td>硬件版本(0x01)</td>
+			<td>1</td>
+			<td>-</td>
+			<td>字符串(byte[])</td>
+			<td> </td>	
+			<td> </td>	
+	</tr>	
+	<tr>
+			<td>软件版本(0x01))</td>
+			<td>1</td>
+			<td>-</td>
+			<td>字符串(byte[])</td>
+			<td> </td>	
+			<td> </td>	
+	</tr>	
+	
+	<tr>
+		<td rowspan = "2">发动机(0x11)</td>
+			<td>发动机转速倍率(0x01)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>倍率(rpm*n)(uint8)</td>	
+			<td> </td>	
+			<td> </td>	
+	</tr>	
+	<tr> 
+			<td>发动机采样频率(0x02)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>频率(10,20,50,100)(uint16)</td>	
+			<td> </td>	
+			<td> </td>	
+	</tr>	
+	
+	<tr>
+		<td rowspan = "4">温度采集(0x12)</td>
+			<td>内部温度(0x01)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>温度值(int16)</td>	
+			<td> </td>	
+			<td> </td>	
+	</tr>	
+	<tr>
+			<td>冷却液温度(0x11)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>最低温度(int16)</td>
+			<td>最高温度(int16)</td>	
+			<td>报警温度(int16)</td>				
+	</tr>	
+	<tr>
+			<td>缸盖温度(0x12)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>最低温度(int16)</td>
+			<td>最高温度(int16)</td>	
+			<td>报警温度(int16)</td>	
+	</tr>	
+	<tr>
+			<td>排气温度(0x13)</td>
+			<td>1/0</td>
+			<td>-</td>
+            <td>最低温度(int16)</td>
+			<td>最高温度(int16)</td>	
+			<td>报警温度(int16)</td>	
+	</tr>
+	
+	<tr>
+		<td rowspan = "2">工作模式(0x81)</td>
+			<td>进入引导(0x01) </td>
+			<td>0</td>
+			<td>-</td>
+			<td> </td>
+			<td> </td>				
+			<td> </td>	
+	</tr>	
+	<tr>
+			<td>进入固件升级(0x12) </td>
+			<td>0</td>
+			<td>-</td>
+			<td> </td>
+			<td> </td>				
+			<td> </td>	
+	</tr>			
+	
+	<tr>
+		<td rowspan = "3">固件升级(0x82)</td>
+			<td>最大数据包大小(0x11) </td>
+			<td>1</td>
+			<td>-</td>
+			<td>数据包大小(uint32)</td>	
+			<td>错误传输次数(uint8)</td>
+			<td> </td>				
+	</tr>	
+	<tr>
+			<td>文件参数(0x12)</td>
+			<td>0</td>
+			<td>-</td>
+			<td>文件大小(uint32)</td>	
+			<td>校验码(uint8)</td>	
+			<td> </td>	
+	</tr>	
+	<tr>
+			<td>数据包参数(0x13)</td>
+			<td>0</td>
+			<td>-</td>
+			<td>数据包大小(uint32)</td>	
+			<td>校验码(uint8)</td>	
+			<td> </td>				
+	</tr>		
+	<tr>
+		<td rowspan = "5">计时器(0xA1)</td>
+			<td>总开机时间(0x10) </td>
+			<td>1</td>
+			<td>-</td>
+			<td>分钟数(uint32)</td>	
+			<td> </td>		
+			<td> </td>				
+	</tr>
+	<tr>
+			<td>保养计时器(0x11)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>开关(uint8)</td>	
+			<td>分钟数(uint32)</td>	
+			<td>保养周期(uint32)</td>	
+	</tr>	
+	<tr>
+			<td>计时器1(0x21)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>开关(uint8)</td>	
+			<td>分钟数(uint32)</td>	
+			<td> </td>	
+	</tr>	
+	<tr>
+			<td>计时器2(0x22)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>开关(uint8)</td>
+			<td>分钟数(uint32)</td>	
+			<td> </td>				
+	</tr>	
+	<tr>
+			<td>计时器3(0x23)</td>
+			<td>1/0</td>
+			<td>-</td>
+			<td>开关(uint8)</td>
+			<td>分钟数(uint32)</td>	
+			<td> </td>				
+	</tr>		
+</table>
 
 ***
 
-## 反馈
+## 有问题反馈
 
 在开发中有任何问题，欢迎反馈给我
 
