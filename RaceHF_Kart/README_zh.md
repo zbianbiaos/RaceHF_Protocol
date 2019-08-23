@@ -111,17 +111,16 @@ Byte Index | Content             | Type(bytes) | Comment
 
 ## 被动数据协议
 
-被动数据协议使用请求——响应方式传输信息，数据传输协议如下:  
+被动数据协议使用请求——响应方式传输信息，数据传输协议如下:
 
 <table>
-    <tr>
+	<tr>
 		<td >类</td>
 		<td>项</td>
 		<td>读取/设置(1/0)</td>	
 		<td>6字节无效数据</td>	
 		<td colspan = "3"> 参数(按顺序排列)</td>	
 	</tr>
-	
 	<tr>
 		<td rowspan = "3">版本(0x01) </td>
 			<td>设备型号(0x01)</td>
@@ -147,7 +146,6 @@ Byte Index | Content             | Type(bytes) | Comment
 			<td> </td>	
 			<td> </td>	
 	</tr>	
-	
 	<tr>
 		<td rowspan = "2">发动机(0x11)</td>
 			<td>发动机转速倍率(0x01)</td>
@@ -165,7 +163,6 @@ Byte Index | Content             | Type(bytes) | Comment
 			<td> </td>	
 			<td> </td>	
 	</tr>	
-	
 	<tr>
 		<td rowspan = "4">温度采集(0x12)</td>
 			<td>内部温度(0x01)</td>
@@ -195,11 +192,10 @@ Byte Index | Content             | Type(bytes) | Comment
 			<td>排气温度(0x13)</td>
 			<td>1/0</td>
 			<td>-</td>
-            <td>最低温度(int16)</td>
+			<td>最低温度(int16)</td>
 			<td>最高温度(int16)</td>	
 			<td>报警温度(int16)</td>	
 	</tr>
-	
 	<tr>
 		<td rowspan = "2">工作模式(0x81)</td>
 			<td>进入引导(0x01) </td>
@@ -216,8 +212,7 @@ Byte Index | Content             | Type(bytes) | Comment
 			<td> </td>
 			<td> </td>				
 			<td> </td>	
-	</tr>			
-	
+	</tr>	
 	<tr>
 		<td rowspan = "3">固件升级(0x82)</td>
 			<td>最大数据包大小(0x11) </td>
@@ -226,7 +221,7 @@ Byte Index | Content             | Type(bytes) | Comment
 			<td>数据包大小(uint32)</td>	
 			<td>错误传输次数(uint8)</td>
 			<td> </td>				
-	</tr>	
+	</tr>
 	<tr>
 			<td>文件参数(0x12)</td>
 			<td>0</td>
@@ -234,7 +229,7 @@ Byte Index | Content             | Type(bytes) | Comment
 			<td>文件大小(uint32)</td>	
 			<td>校验码(uint8)</td>	
 			<td> </td>	
-	</tr>	
+	</tr>
 	<tr>
 			<td>数据包参数(0x13)</td>
 			<td>0</td>
