@@ -81,6 +81,7 @@ Byte Index | Content             | Type(bytes) | Comment
 1          | hardware version    | uint32(4)   | 硬件版本，参考下方说明
 5          | software version    | uint32(4)   | 软件版本，参考硬件版本说明
 9          | battery percent     | int8(1)     | 电池电量百分比，电量错误-1
+10         | charge state        | uin8(1)     | 蓝牙连接状态
 
 > Hardware Version 使用4字节表示硬件版本，4字节中每个字节表示一个版本主次信息  
 > 示例如下：
