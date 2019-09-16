@@ -42,7 +42,7 @@ Therefore, the GPS information is decomposed into two data packets and transmitt
 Index | Type        | Comment
 ---   | ---         | ---
 0x10  | GPS Part.1  | Longitude / Latitude / Altitude / Positioning mode
-0x11  | GPS part.2  | UNIX Timestamp / millsecond  / Speed / Track Angle / HDOP / Tracked Satellites Count
+0x11  | GPS part.2  | UNIX Timestamp / millsecond  / Speed / Track Angle / HDOP / Tracked Satellites Number
 
 #### GPS Part.1
 
@@ -75,7 +75,7 @@ typedef struct
 
 #### GPS Part.2
 
-GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **Speed** / **Track Angle** / **HDOP** / **Tracked Satellites Count**  
+GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **Speed** / **Track Angle** / **HDOP** / **Tracked Satellites Number**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -143,6 +143,98 @@ Can be obtained from the second package：
 > Number of locked satellites is: 0x12 => satellites: 18  
 
 **Reference code：[gps.c](gps.c)**
+
+***
+
+## Mode Setting Protocol
+
+> Mode setting: AAA2  
+> Access: Write Without Response, Read, Notify  
+
+Set *SD card starts recording trigger mode*, *SD card starts recording trigger speed*, *SD card stops recording timeout*, *SD card record file type* and *SD card record file time-zone*.
+
+The C language structure in the program is as follows:
+
+```C
+struct content
+{
+  uint8_t   sdcard_record_trigger;        /* starts recording trigger mode */
+  uint8_t   sdcard_record_start_speed;    /* starts recording trigger speed */
+  uint8_t   sdcard_record_stop_timeout;   /* stops recording timeout */
+  uint8_t   sdcard_record_filetype;       /* file type */
+  int8_t    sdcard_record_timezone;       /* time-zone */
+};
+```
+
+Read this characteristic, you can retrieve the content of all the configuration items listed above.  
+You need to send the relevant configuration id to set the relevant item of this article, whose format is: id+param.  
+Once set up, a notification with all content will be sent.  
+
+Example:
+> Read content: 0x41 0x42 0x43 0x00 0x03 0x0A 0x14 0x00 0x08  
+> indicates that the content is:  
+> - User ID="ABC"  
+> - Speed trigger SD card recording  
+> - Trigger recording speed is 10km/h  
+> - Trigger stop recording timeout is 20 seconds  
+> - Record file format is VBO file  
+> - Time-zone is East 8th District  
+
+**SD card starts recording trigger mode**  
+Sdcard_record_trigger: configuration id = 0x11  
+Trigger SD card record conditions: 0: stop recording; 1: start recording manually; 2: start recording automatically;3: trigger recording by the speed
+> 0: Recording SD card will not be triggered anyway.  
+> 1: The SD card record is forced to be opened. Limitations: SD card is inserted, GPS is successfully located, and 0 will be automatically cleaned after shutdown.  
+> 2: The SD card record is opened automatically. Limitations: SD card is inserted, GPS is successfully located, and 0 will not be automatically cleaned after shutdown.  
+> 3: The SD card record is triggered by the speed. Limitations: SD card is inserted, GPS is successfully located, and 0 will not be automatically cleaned after shutdown.  
+
+Example:
+> Start recording manually: Write 0x11 0x01  
+> Stop recording manually: Write 0x11 0x00  
+> Start recording automatically: write 0x11 0x02  
+> Trigger recording by the speed: Write 0x11 0x03  
+
+The speed trigger is related to sdcard_record_start_speed and sdcard_record_stop_timeout, and is used to set the trigger condition of 3.
+
+**SD card starts recording trigger speed**  
+Sdcard_record_start_speed: Configure index = 0x12  
+Set the trigger speed for triggering SD card recording, the range is {5,200}
+
+Example:
+> Set the trigger speed to 10km/h: 0x12 0x0A  
+> Set the trigger speed to 60km/h: 0x12 0x3C  
+
+**SD card stop recording timeout**  
+Sdcard_record_stop_timeout: Configure index = 0x13  
+Set the timeout that triggers the SD card to stop recording. When the speed is less than 1km/h and the time exceeds the timeout, the SD card recordwill be stopped. The range is {10,200}.
+
+Example:
+> Set the timeout to 15 seconds: 0x13 0x0F  
+> Set the timeout to 120 seconds: 0x13 0x78  
+
+**SD card record file type**  
+Sdcard_record_filetype: Configure index = 0x14  
+Set the record file type. 0: VBO file; 1: RHF file  
+
+Example:
+> Set the record to vbo file: 0x14 0x00  
+> Set the record to rhf file: 0x14 0x01  
+
+**SD card record file time-zone**  
+Sdcard_record_timezone: Configure index = 0x15  
+Set time-zone: range is {-12,12}  
+
+Example:
+> Set up into the East 8th District: 0x15 0x08  
+> Set to the West 4th District: 0x15 0xFC  
+
+**Device Control Command**  
+Configure index = 0xA0  
+
+Example:
+> Recovery from OAD state: 0xA0 0x01  
+> Device shutdown: 0xA0 0x02  
+> Device restart: 0xA0 0x03  
 
 ***
 
