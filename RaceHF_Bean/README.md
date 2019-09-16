@@ -4,6 +4,8 @@
 **[-> Development instructions](#Development-instructions)**  
 **[-> Positioning Data Protocol](#Positioning-Data-Protocol)**  
 **[-> Mode Setting Protocol](#Mode-Setting-Protocol)**  
+**[-> System Status](#System-Status)**  
+**[-> Parameter Configuration](#Parameter-Configuration)**  
 
 ## Overview
 
@@ -39,6 +41,9 @@ The location of the location packet is fixed to **20 bytes**.
 
 ## Positioning Data Protocol
 
+> Characteristic: AAA1  
+> Access: Notify  
+
 The GPS part contains data parsed from GPS.
 The data is mainly read from the NMEA format including latitude and longitude, time, speed, and the like.  
 The GPS data contains too much content. **Bluetooth 4.0** protocol (MTU=23) cannot carry all the information at once.
@@ -49,7 +54,7 @@ Index | Type        | Comment
 0x10  | GPS Part.1  | Longitude / Latitude / Altitude / Positioning mode
 0x11  | GPS part.2  | UNIX Timestamp / millsecond  / Speed / Track Angle / HDOP / Tracked Satellites Number
 
-#### GPS Part.1
+### GPS Part.1
 
 GPS Part.1 contains **Longitude** / **Latitude** / **Altitude** / **Positioning mode**  
 The data is arranged as follows, with no memory alignment:
@@ -78,7 +83,7 @@ typedef struct
 #pragma pack()
 ```
 
-#### GPS Part.2
+### GPS Part.2
 
 GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **Speed** / **Track Angle** / **HDOP** / **Tracked Satellites Number**  
 The data is arranged as follows：
@@ -112,9 +117,6 @@ typedef struct
 ```
 
 ### Description
-
-> Positioning data: AAA1  
-> Access: Notify  
 
 Two complete 40 bytes of 0x10 and 0x11 are called a set of data.
 The device sends a set of data must be 0x10 before the first 0x11, the APP needs to restore the corresponding content according to the original data.  
@@ -153,7 +155,7 @@ Can be obtained from the second package：
 
 ## Mode Setting Protocol
 
-> Mode setting: AAA2  
+> Characteristic: AAA2  
 > Access: Write Without Response, Read, Notify  
 
 Set *SD card starts recording trigger mode*, *SD card starts recording trigger speed*, *SD card stops recording timeout*, *SD card record file type* and *SD card record file time-zone*.
@@ -242,6 +244,133 @@ Example:
 > Device restart: 0xA0 0x03  
 
 ***
+
+## System Status
+
+> Characteristic: AAA3  
+> Access: Read  
+
+AAA3 only allows reading of system status.  
+*In order to put more system information into a status content, the bit field feature is used*
+
+The C language structure in the program is as follows:
+
+```C
+typedef struct
+{
+  uint8_t     battery_percent;
+  
+  uint8_t     charge_mode:1;
+  uint8_t     connect_mode:1;
+  uint8_t     oad_mode:1;
+  uint8_t     sdcard_mode:2;
+  
+  uint8_t     :0;
+  
+  uint8_t     gps_lock:1;
+  uint8_t     sdcard_lock:1;
+} stuSYS;
+```
+
+> *battery_percent*:  
+> Battery power percentage. Always 100 when charging  
+>  
+> *charge_mode*:  
+> Is charging. 1: charging; 0: not charging  
+>  
+> *connect_mode*:  
+> Bluetooth is connected. 1: Bluetooth is connected; 0: Bluetooth is not connected (APP reading should always be 1)  
+>  
+> *oad_mode*:  
+> Whether it is in the firmware upgrade mode. 1: Firmware upgrade is in progress; 0: No firmware upgrade  
+>  
+> *sdcard_mode*:  
+> SD card status. 0: The SD card is not detected; 1: The SD card has been detected, but the file has not been recorded yet; 2: The SD card is recording the file; 3: The SD card is running abnormally.  
+>  
+> *gps_lock*:  
+> GPS resolution task lock (APP does not care)  
+>  
+> *sdcard_lock*:  
+> SD card record lock (APP does not need to be managed)  
+
+Example:
+> Read the following data: 0x07 0x12 0x00  
+> indicates that the content is:  
+> - Battery power is 7%
+> - not charging
+> - Bluetooth is connected
+> - not in firmware upgrade
+> - SD card is recording files
+
+Example:
+> Read the following data: 0x39 0x0B 0x00  
+> indicates that the content is:  
+> - Battery power is 57%
+> - Charging
+> - Bluetooth is connected
+> - not in firmware upgrade
+> - SD card detected but file not started yet
+
+*[link:bit field](https://en.wikipedia.org/wiki/Bit_field)*
+
+***
+
+## Parameter Configuration
+
+> Characteristic: AAA3  
+> Access: Write Without Response, Read, Notify  
+
+Used to configure or read parameters in the system.  
+Read parameter method: directly send the index of the corresponding parameter with one byte zero will immediately respond to the corresponding content from Notify, or read the corresponding content from Read later.  
+Set parameter method: similar to AAA2, use index+length+param mode, it will respond to the set parameters immediately after setting, and Read can also read the set parameters.  
+The first two bytes of the read or set content are the index and payload lengths, and the second byte of the read parameter is written to 0x00.  
+
+**User ID**  
+Id = 0x01, readable and writable  
+String type indicating the XXXX part of the device name RaceHF_XXXX  
+
+Example:
+> Get User ID:  
+> Write: 0x01 0x00  
+> Receive notification immediately: 0x01 0x04 0x59 0x58 0x43 0x00  
+> Or read: 0x01 0x04 0x59 0x58 0x43 0x00  
+> Indicates that the user ID is "YXC"  
+>  
+> Set User ID:  
+> Write: 0x01 0x03 0x59 0x58 0x43  
+> Receive notification immediately: 0x01 0x04 0x59 0x58 0x43 0x00  
+> Or read: 0x01 0x04 0x59 0x58 0x43 0x00  
+> Means to set the user ID to "YXC"  
+
+**Device Model**  
+Id = 0x02, read only  
+String type, return the device model  
+
+Example:
+> Get the device model:  
+> Write: 0x02 0x00  
+> Receive notification immediately: 0x02 0x0B 0x52 0x61 0x63 0x48 0x46 0x20 0x42 0x65 0x61 0x6E  
+> Or read: 0x02 0x0B 0x52 0x61 0x63 0x48 0x46 0x20 0x42 0x65 0x61 0x6E  
+> Indicates that the device model is "RaceHF_Bean"  
+
+**Hardware Version**  
+Id = 0x03, read only  
+String type, return the device hardware version  
+
+**Software Version**  
+Id = 0x04, read only  
+String type, return device software version  
+
+**Satellites Locked Numbers**  
+Id = 0x11, read only  
+Byte array type, return all number of positioning satellites / GPS / GLONASS / GALILEO.
+
+Example:
+> Get the number ofSatellites Locked Numbers:  
+> Write: 0x11 0x00  
+> Receive notification immediately: 0x11 0x04 0x0E 0x09 0x02 0x03  
+> Or read: 0x11 0x04 0x0E 0x09 0x02 0x03 0x6E  
+> Indicates that the response is id=0x11, the content length is 4 bytes, the number of positioning satellites is 14, the number of GPS satellites is 9, the number of GLONASS satellites is 2, and the number of GALILEO satellites is 3.  
 
 ## Feedback
 
