@@ -317,7 +317,7 @@ Example:
 
 ## Parameter Configuration
 
-> Characteristic: AAA3  
+> Characteristic: AAA4  
 > Access: Write Without Response, Read, Notify  
 
 Used to configure or read parameters in the system.  

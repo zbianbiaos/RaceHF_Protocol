@@ -317,7 +317,7 @@ typedef struct
 
 ## 参数配置
 
-> 特征值：AAA3  
+> 特征值：AAA4  
 > 开放权限：Write Without Response，Read，Notify
 
 用于配置或读取系统中的参数。  
