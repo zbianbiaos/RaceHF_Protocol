@@ -1,5 +1,8 @@
 # RaceHF Bean Protocol
 
+\[[中文](README_zh.md)\]
+[[English](README.md)\]
+
 **[-> Overview](#Overview)**  
 **[-> Development instructions](#Development-instructions)**  
 **[-> Positioning Data Protocol](#Positioning-Data-Protocol)**  
@@ -8,9 +11,6 @@
 **[-> Parameter Configuration](#Parameter-Configuration)**  
 
 ## Overview
-
-\[[English](README.md)\]
-[[中文](README_zh.md)\]
 
 Bean is aimed at the majority of racing enthusiasts, providing a quality service product that integrates software and hardware platforms for the majority of racer.
 
