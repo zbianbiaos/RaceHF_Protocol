@@ -1,5 +1,10 @@
 # RaceHF Bean Protocol
 
+**[Overview](#Overview)**
+**[Development instructions](#Development instructions)**
+**[Positioning Data Protocol](#Positioning Data Protocol)**
+**[Mode Setting Protocol](#Mode Setting Protocol)**
+
 ## Overview
 
 \[[English](README.md)\]
@@ -32,7 +37,7 @@ Main features of the product:
 In order to be compatible with a wider range of APP developers, Bean products use compatible **Bluetooth 4.0** protocol communication (MTU=23),
 The location of the location packet is fixed to **20 bytes**.
 
-### Positioning Data Protocol
+## Positioning Data Protocol
 
 The GPS part contains data parsed from GPS.
 The data is mainly read from the NMEA format including latitude and longitude, time, speed, and the like.  
