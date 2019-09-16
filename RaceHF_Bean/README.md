@@ -5,32 +5,49 @@
 \[[English](README.md)\]
 [[中文](README_zh.md)\]
 
-## GPS Packet Protocol
+Bean is aimed at the majority of racing enthusiasts, providing a quality service product that integrates software and hardware platforms for the majority of racer.
 
-> AdvData & DevName:   Race_XXXX (XXXX represents 4 hexadecimal numbers)  
-> Service UUID：       0000AAA0-0000-1000-8000-00805F9B34FB  
-> Characteristic UUID：0000AAA1-0000-1000-8000-00805F9B34FB
+Main features of the product:
 
-Bean product is compatible with **Bluetooth 4.0** protocol (MTU=23),
-the data packet is fixed to **20 bytes** The first byte of a packet indicates the packet type.
+- **32-bit ultra low power** embedded processor
+- Support **Bluetooth 5.0** protocol
+- High-quality positioning chip, the highest real refresh rate up to **20hz**, designed for racing application scene optimization algorithms. Compatible with GPS/GLONASS/GALILEO, built-in high sensitivity ceramic antenna, external antenna avaliable
+- Support for air firmware upgrades
+- Support SD card to record VBO format file, import recorded data into mainstream racing data analysis software such as CTool Track attack, realize boot and use, no longer rely on mobile phone
+- Open data communication protocol, third-party software developers quickly develop and hardware-compatible APP
+- Support for Android and IOS
+- Supports the world's most widely used two racing data analysis apps: Harry's Laptimer and Racechrono
 
-Index | Type        | Comment
----   | ---         | ---
-0x10  | GPS Part.1  | Longitude / Latitude / Altitude / Fix quality
-0x11  | GPS part.2  | UNIX Timestamp / Millsecond  / Speed / Track Angle / HDOP / Tracked Satellites
-0xA1  | Device      | Hardware Version / Software Version / Battery percentage
+***
 
-### GPS Part
+## Development instructions
+
+> Device Name: RaceHF_[0-9,A-Z,a-z]{1,4} (_ behind indicates 1~4 letters or numbers)  
+> Data and Control Service UUID: AAA0  
+> Positioning Data Characteristic UUID: AAA1  
+> Mode Setting Characteristic UUID: AAA2  
+> System Status Characteristic UUID: AAA3  
+> Parameter Setting Characteristic UUID: AAA4  
+
+In order to be compatible with a wider range of APP developers, Bean products use compatible **Bluetooth 4.0** protocol communication (MTU=23),
+The location of the location packet is fixed to **20 bytes**.
+
+### Positioning Data Protocol
 
 The GPS part contains data parsed from GPS.
-The data is mainly read from the NMEA format including latitude and longitude, time, speed, and the like.
+The data is mainly read from the NMEA format including latitude and longitude, time, speed, and the like.  
 The GPS data contains too much content. **Bluetooth 4.0** protocol (MTU=23) cannot carry all the information at once.
 Therefore, the GPS information is decomposed into two data packets and transmitted with different indexes (0x10, 0x11).
 
+Index | Type        | Comment
+---   | ---         | ---
+0x10  | GPS Part.1  | Longitude / Latitude / Altitude / Positioning mode
+0x11  | GPS part.2  | UNIX Timestamp / millsecond  / Speed / Track Angle / HDOP / Tracked Satellites Count
+
 #### GPS Part.1
 
-GPS Part.1 contains **Longitude** / **Latitude** / **Altitude** / **Fix quality**  
-The data is arranged as follows：
+GPS Part.1 contains **Longitude** / **Latitude** / **Altitude** / **Positioning mode**  
+The data is arranged as follows, with no memory alignment:
 
 Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
@@ -40,9 +57,25 @@ Byte Index | Content             | Type(bytes) | Comment
 17         | altitude            | int16(2)    | **Integer** Type unit:meter
 19         | fix quality         | byte(1)     | 0:invalid, 1:GPS fix(2D)，2:GPS fix(3D)，4:DGPS fix
 
+The C code is as follows:
+
+```C
+/* GNSS Pack.1 */
+#pragma pack(1)
+typedef struct
+{
+  uint8_t     index;
+  double      longitude;
+  double      latitude;
+  int16_t     height;
+  uint8_t     locatemode;
+} stuGPSPack1;
+#pragma pack()
+```
+
 #### GPS Part.2
 
-GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **Speed** / **Track Angle** / **HDOP** / **Tracked Satellites**  
+GPS Part.2 contains **UNIX Timestamp** / **millsecond**  / **Speed** / **Track Angle** / **HDOP** / **Tracked Satellites Count**  
 The data is arranged as follows：
 
 Byte Index | Content             | Type(bytes) | Comment
@@ -55,23 +88,61 @@ Byte Index | Content             | Type(bytes) | Comment
 15         | hdop                | float(4)    | Horizontal dilution of position
 19         | tracked satellites  | byte(1)     | The maximum is 12 without GSA, otherwise the maximum is 24
 
-### Device
+The C code is as follows:
 
-Bean contains **Hardware Version** / **Software Version** / **Battery percentage**  
-The data is arranged as follows：
+```C
+/* GNSS Pack.2 */
+#pragma pack(1)
+typedef struct
+{
+  uint8_t     index;
+  uint32_t    seconds;
+  uint16_t    milliseconds;
+  float       speed;
+  float       direction;
+  float       hdop;
+  uint8_t     satellites;
+} stuGPSPack2;
+#pragma pack()
+```
 
-Byte Index | Content             | Type(bytes) | Comment
----        | ---                 | ---         | ---
-0          | Index               | byte(1)     | = 0xA0，Indicates that the packet is device information
-1          | hardware version    | uint32(4)   | As follows below
-5          | software version    | uint32(4)   | Reference hardware version
-9          | battery percent     | int8(1)     | Battery power percentage, error is -1
+### Description
 
-> Hardware Version uses 4 bytes to represent the hardware version,
-> and each byte in 4 bytes represents a version of the primary and secondary information.  
-> For example：
-> 0x01020304 can be split into 0x01 0x02 0x03 0x04  
-> The hardware version is V1.2.3.4
+> Positioning data: AAA1  
+> Access: Notify  
+
+Two complete 40 bytes of 0x10 and 0x11 are called a set of data.
+The device sends a set of data must be 0x10 before the first 0x11, the APP needs to restore the corresponding content according to the original data.  
+  *there is a small probability that the APP can not receive a complete set of data packets, and directly discard the entire group*
+
+### Example
+
+If you receive the following two groups of data packets:
+
+```Data
+0x10 0x72 0x24 0x44 0xB7 0xE6 0xC7 0x5E 0x40 0x91 0x91 0xBB 0x21 0xF0 0x74 0x37 0xC0 0x7B 0x00 0x03
+0x11 0x39 0x8B 0x7C 0x5D 0x5E 0x01 0x14 0xAE 0xE0 0x42 0xFA 0x3E 0xF6 0x42 0x52 0xB8 0x9E 0x3F 0x12
+```
+
+Can be obtained from the first package：
+
+> Index = 0x10  
+> Longitude raw data is: 0x72 0x24 0x44 0xB7 0xE6 0xC7 0x5E 0x40 => longitude = 123.12345678  
+> Latitude raw data is: 0x91 0x91 0xBB 0x21 0xF0 0x74 0x37 0xC0 => latitude = -23.45678912  
+> Altitude raw data is: 0x7B 0x00 => altitude = 123 meters  
+> Positioning mode raw data is: 0x03 => DGPS+3D mode  
+
+Can be obtained from the second package：
+
+> Index = 0x11  
+> UNIX timestamp raw data is: 0x39 0x8B 0x7C 0x5D => timestamp: 1568443193  
+> Milliseconds raw data is: 0x5E 0x01 => milliseconds: 350  
+> Speed raw data is: 0x14 0xAE 0xE0 0x42 => speed: 112.34km / h  
+> Direction raw data is: 0xFA 0x3E 0xF6 0x42 => direction: 123.123  
+> HDOP raw data is: 0x52 0xB8 0x9E 0x3F => hdop: 1.24  
+> Number of locked satellites is: 0x12 => satellites: 18  
+
+**Reference code：[gps.c](gps.c)**
 
 ***
 
