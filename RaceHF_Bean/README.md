@@ -1,9 +1,9 @@
 # RaceHF Bean Protocol
 
-**[Overview](#Overview)**
-**[Development instructions](#Development instructions)**
-**[Positioning Data Protocol](#Positioning Data Protocol)**
-**[Mode Setting Protocol](#Mode Setting Protocol)**
+**[Overview](#Overview)**  
+**[Development instructions](#Development instructions)**  
+**[Positioning Data Protocol](#Positioning Data Protocol)**  
+**[Mode Setting Protocol](#Mode Setting Protocol)**  
 
 ## Overview
 
