@@ -93,7 +93,7 @@ Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
 0          | Index               | byte(1)     | = 0x11，表示该数据包是GPS Part.2
 1          | unix TimeStamp      | uint32(4)   | UNIX时间戳，从*1970/1/1*以UTC-0作为时间起点
-5          | millsecond          | uint16(2)   | 毫秒数，例如： 0, 100 ,200, ... 900 或者更高经度：50, 150, 950等
+5          | millsecond          | uint16(2)   | 毫秒数，例如： 0, 100, 200, ... 900 或者更高经度：50, 150, 950等
 7          | speed               | float(4)    | 速度，总是大于等于0, 单位：km/h
 11         | direction           | float(4)    | 方位角，单位：度
 15         | hdop                | float(4)    | 水平定位因子，表示水平定位精度因数

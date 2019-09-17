@@ -93,7 +93,7 @@ Byte Index | Content             | Type(bytes) | Comment
 ---        | ---                 | ---         | ---
 0          | Index               | byte(1)     | = 0x11，Indicates that the packet is GPS Part.2
 1          | unix TimeStamp      | uint32(4)   | Seconds from 1970/1/1 UTC-0 to the present
-5          | millsecond          | uint16(2)   | eg: 0, 100 ,200, ... 900 or higher precision like: 50, 150,950,etc..
+5          | millsecond          | uint16(2)   | eg: 0, 100, 200, ... 900 or higher precision like: 50, 150, 950, etc..
 7          | speed               | float(4)    | Always >= 0, unit:km/h
 11         | direction           | float(4)    | unit:degree
 15         | hdop                | float(4)    | Horizontal dilution of position
