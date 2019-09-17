@@ -362,6 +362,17 @@ String type, return the device hardware version
 Id = 0x04, read only  
 String type, return device software version  
 
+**Device Identification**  
+Id = 0x05, read only  
+Byte array type, Returns a byte array of device IDs  
+
+Example:
+> Get Device Identification:  
+> Write: 0x05 0x00  
+> Receive notification immediately: 0x15 0x06 0x12 0x23 0x34 0x45 0x56 0x67  
+> Or read: 0x15 0x06 0x12 0x23 0x34 0x45 0x56 0x67  
+> Means Device ID = 12:23:34:45:56:67  
+
 **Satellites Locked Numbers**  
 Id = 0x11, read only  
 Byte array type, return all number of positioning satellites / GPS / GLONASS / GALILEO.
