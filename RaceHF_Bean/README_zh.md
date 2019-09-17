@@ -35,6 +35,7 @@ Bean面向广大赛车爱好者，为广大车友们提供一个融合软硬件�
 > 模式设置 Characteristic UUID：AAA2  
 > 系统状态 Characteristic UUID：AAA3  
 > 参数设置 Characteristic UUID：AAA4  
+> **字节序模式：小端对齐**  
 
 Bean产品为了兼容更广泛的APP开发者，使用兼容**蓝牙4.0**协议通讯(MTU=23)，
 定位数据包内容固定为**20字节**。

@@ -35,6 +35,7 @@ Main features of the product:
 > Mode Setting Characteristic UUID: AAA2  
 > System Status Characteristic UUID: AAA3  
 > Parameter Setting Characteristic UUID: AAA4  
+> **Endianness Mode: Little Endian**  
 
 In order to be compatible with a wider range of APP developers, Bean products use compatible **Bluetooth 4.0** protocol communication (MTU=23),
 The location of the location packet is fixed to **20 bytes**.
