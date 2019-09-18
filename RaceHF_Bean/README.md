@@ -166,6 +166,7 @@ The C language structure in the program is as follows:
 ```C
 struct content
 {
+  uint8_t   autooff_timeout;              /* auto shutdown timeout */
   uint8_t   sdcard_record_trigger;        /* starts recording trigger mode */
   uint8_t   sdcard_record_start_speed;    /* starts recording trigger speed */
   uint8_t   sdcard_record_stop_timeout;   /* stops recording timeout */
@@ -179,14 +180,22 @@ You need to send the relevant configuration id to set the relevant item of this 
 Once set up, a notification with all content will be sent.  
 
 Example:
-> Read content: 0x41 0x42 0x43 0x00 0x03 0x0A 0x14 0x00 0x08  
+> Read content: 0x02 0x03 0x0A 0x14 0x00 0x08  
 > indicates that the content is:  
-> - User ID="ABC"  
-> - Speed trigger SD card recording  
+> - Auto shutdown timeout is 2 minutes  
 > - Trigger recording speed is 10km/h  
 > - Trigger stop recording timeout is 20 seconds  
 > - Record file format is VBO file  
 > - Time-zone is East 8th District  
+
+**Automatic shutdown timeout duration**  
+Autooff_timeout: configuration id = 0x01  
+Set the automatic shutdown timeout duration: the unit is minutes. When the speed is less than 10km/h and the Bluetooth is not connected, the automatic shutdown timeout timer is triggered. The value range is {0,255}.  
+When set to 0, it means no automatic shutdown.
+
+Example:
+> Settings do not automatically shutdown: 0x01 0x00  
+> Set timeout for 10 minutes to automatically shutdown: 0x01 0x0A  
 
 **SD card starts recording trigger mode**  
 Sdcard_record_trigger: configuration id = 0x11  

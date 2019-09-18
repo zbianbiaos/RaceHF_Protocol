@@ -159,13 +159,14 @@ typedef struct
 > 特征值：AAA2  
 > 开放权限：Write Without Response，Read，Notify  
 
-设置SD卡开始记录触发方式，SD卡开始记录触发速度，SD卡停止记录超时时间，SD卡记录文件类型和SD卡记录文件时区。
+设置自动关机超时时长，SD卡开始记录触发方式，SD卡开始记录触发速度，SD卡停止记录超时时间，SD卡记录文件类型和SD卡记录文件时区。
 
 程序中C语言结构体如下：
 
 ```C
 struct content
 {
+  uint8_t   autooff_timeout;              /* 自动关机超时时长 */
   uint8_t   sdcard_record_trigger;        /* SD卡开始记录触发方式 */
   uint8_t   sdcard_record_start_speed;    /* SD卡开始记录触发速度 */
   uint8_t   sdcard_record_stop_timeout;   /* SD卡停止记录超时时间 */
@@ -179,14 +180,23 @@ struct content
 设置完毕后会回应一条结构体存储的所有信息。
 
 示例：
-> 读到内容：0x41 0x42 0x43 0x00 0x03 0x0A 0x14 0x00 0x08  
+> 读到内容：0x02 0x03 0x0A 0x14 0x00 0x08  
 > 表示内容为：  
-> - 用户ID="ABC"  
+> - 超时自动关机时间为2分钟  
 > - 速度触发SD卡记录  
 > - 触发记录速度为10km/h  
 > - 触发停止记录超时时间为20秒  
 > - 记录文件格式为VBO文件  
 > - 时区为东8区  
+
+**自动关机超时时长**  
+autooff_timeout：配置id = 0x01  
+设置自动关机超时时长：单位为分钟，当速度小于10km/h且蓝牙没有连接触发自动关机超时计时器计时，数值范围为{0,255}  
+当设置为0时表示不自动关机
+
+示例：
+> 设置不自动关机：0x01 0x00  
+> 设置超时10分钟自动关机：0x01 0x0A  
 
 **SD卡开始记录触发方式**  
 sdcard_record_trigger：配置id = 0x11  
