@@ -1,7 +1,6 @@
 # RaceHF Bean Protocol
 
 \[[中文](README_zh.md)\]
-[[English](README.md)\]
 
 **-> [Overview](#Overview)**  
 **-> [Development instructions](#Development-instructions)**  
