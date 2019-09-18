@@ -9,6 +9,7 @@
 **-> [Mode Setting Protocol](#Mode-Setting-Protocol)**  
 **-> [System Status](#System-Status)**  
 **-> [Parameter Configuration](#Parameter-Configuration)**  
+**-> [Feedback](#Feedback)**  
 
 ## Overview
 
