@@ -159,7 +159,7 @@ typedef struct
 > 特征值：AAA2  
 > 开放权限：Write Without Response，Read，Notify  
 
-设置*SD卡开始记录触发方式*，*SD卡开始记录触发速度*，*SD卡停止记录超时时间*，*SD卡记录文件类型*和*SD卡记录文件时区*。
+设置SD卡开始记录触发方式，SD卡开始记录触发速度，SD卡停止记录超时时间，SD卡记录文件类型和SD卡记录文件时区。
 
 程序中C语言结构体如下：
 

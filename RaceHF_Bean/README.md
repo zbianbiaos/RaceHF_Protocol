@@ -159,7 +159,7 @@ Can be obtained from the second package：
 > Characteristic: AAA2  
 > Access: Write Without Response, Read, Notify  
 
-Set *SD card starts recording trigger mode*, *SD card starts recording trigger speed*, *SD card stops recording timeout*, *SD card record file type* and *SD card record file time-zone*.
+Set SD card starts recording trigger mode, SD card starts recording trigger speed, SD card stops recording timeout, SD card record file type and SD card record file time-zone.
 
 The C language structure in the program is as follows:
 
