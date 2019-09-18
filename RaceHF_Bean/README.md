@@ -374,7 +374,7 @@ Example:
 > Means Device ID = 12:23:34:45:56:67  
 
 **Satellites Locked Numbers**  
-Id = 0x11, read only  
+Id = 0xA1, read only  
 Byte array type, return all number of positioning satellites / GPS / GLONASS / GALILEO.
 
 Example:
@@ -383,6 +383,23 @@ Example:
 > Receive notification immediately: 0x11 0x04 0x0E 0x09 0x02 0x03  
 > Or read: 0x11 0x04 0x0E 0x09 0x02 0x03 0x6E  
 > Indicates that the response is id=0x11, the content length is 4 bytes, the number of positioning satellites is 14, the number of GPS satellites is 9, the number of GLONASS satellites is 2, and the number of GALILEO satellites is 3.  
+
+**Account ID**  
+id = 0x11，readable and writable  
+Long integer. Indicating the account ID registered by the user on the Internet
+
+Example:
+> Get Account ID:  
+> Write: 0x11 0x00  
+> Receive notification immediately: 0x01 0x04 0x01 0x12 0x00 0x00  
+> Or read: 0x01 0x04 0x01 0x12 0x00 0x00  
+> Indicates that the account id is 4609  
+>  
+> Set Account ID:  
+> Write: 0x01 0x04 0x03 0x12 0x00 0x00  
+> Receive notification immediately: 0x01 0x04 0x03 0x12 0x00 0x00  
+> Or read: 0x01 0x04 0x03 0x12 0x00 0x00  
+> Set the account id value at 4611  
 
 ## Feedback
 
