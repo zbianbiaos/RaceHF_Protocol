@@ -36,6 +36,11 @@ Bean面向广大赛车爱好者，为广大车友们提供一个融合软硬件�
 > 系统状态 Characteristic UUID：AAA3  
 > 参数设置 Characteristic UUID：AAA4  
 > **字节序模式：小端对齐**  
+> ***
+> 标准GATT服务：Battery Service、Device Information Service  
+> 参考连接：
+> *[service](https://www.bluetooth.com/specifications/gatt/services/)*, 
+> *[characteristic](https://www.bluetooth.com/specifications/gatt/characteristics/)*
 
 Bean产品为了兼容更广泛的APP开发者，使用兼容**蓝牙4.0**协议通讯(MTU=23)，
 定位数据包内容固定为**20字节**。
@@ -259,9 +264,9 @@ sdcard_record_timezone：配置index = 0x15
 ## 系统状态
 
 > 特征值：AAA3  
-> 开放权限：Read  
+> 开放权限：Read，Notify  
 
-AAA3仅允许读系统状态。  
+AAA3仅允许读系统状态，当系统状态发生改变后会主动发送通知。  
 *为了将更多的系统信息放入一条状态内容中，使用了位域特性*
 
 程序中C语言结构体如下：

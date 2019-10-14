@@ -36,6 +36,12 @@ Main features of the product:
 > System Status Characteristic UUID: AAA3  
 > Parameter Setting Characteristic UUID: AAA4  
 > **Endianness Mode: Little Endian**  
+> ***
+> Standard GATT Service：Battery Service、Device Information Service  
+> Reference Link：
+> *[service](https://www.bluetooth.com/specifications/gatt/services/)*, 
+> *[characteristic](https://www.bluetooth.com/specifications/gatt/characteristics/)*
+
 
 In order to be compatible with a wider range of APP developers, Bean products use compatible **Bluetooth 4.0** protocol communication (MTU=23),
 The location of the location packet is fixed to **20 bytes**.
@@ -260,7 +266,8 @@ Example:
 > Characteristic: AAA3  
 > Access: Read  
 
-AAA3 only allows reading of system status.  
+AAA3 only allows reading of system status.
+The notification is sent automatically when the system status changes.  
 *In order to put more system information into a status content, the bit field feature is used*
 
 The C language structure in the program is as follows:
