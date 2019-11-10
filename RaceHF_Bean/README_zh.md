@@ -102,7 +102,7 @@ Byte Index | Content             | Type(bytes) | Comment
 7          | speed               | float(4)    | 速度，总是大于等于0, 单位：km/h
 11         | direction           | float(4)    | 方位角，单位：度
 15         | hdop                | float(4)    | 水平定位因子，表示水平定位精度因数
-19         | tracked satellites  | byte(1)     | 锁定卫星数量，没有GSA情况下最大是12，否则是24
+19         | tracked satellites  | byte(1)     | 锁定卫星数量
 
 C语言代码如下：
 
@@ -164,20 +164,18 @@ typedef struct
 > 特征值：AAA2  
 > 开放权限：Write Without Response，Read，Notify  
 
-设置自动关机超时时长，SD卡开始记录触发方式，SD卡开始记录触发速度，SD卡停止记录超时时间，SD卡记录文件类型和SD卡记录文件时区。
+设置自动关机超时时长，文件开始记录触发方式，记录文件类型和记录文件时区。
 
 程序中C语言结构体如下：
 
 ```C
-struct content
+struct
 {
-  uint8_t   autooff_timeout;              /* 自动关机超时时长 */
-  uint8_t   sdcard_record_trigger;        /* SD卡开始记录触发方式 */
-  uint8_t   sdcard_record_start_speed;    /* SD卡开始记录触发速度 */
-  uint8_t   sdcard_record_stop_timeout;   /* SD卡停止记录超时时间 */
-  uint8_t   sdcard_record_filetype;       /* SD卡记录文件类型 */
-  int8_t    sdcard_record_timezone;       /* SD卡记录文件时区 */
-};
+  uint8_t   autooff_timeout;       /* 自动关机超时时长 */
+  uint8_t   file_record_trigger;   /* 文件开始记录触发方式 */
+  uint8_t   file_record_filetype;  /* 文件记录文件类型 */
+  int8_t    file_record_timezone;  /* 文件记录文件时区 */
+} content;
 ```
 
 读可以直接获取结构体存储的所有信息。  
@@ -185,14 +183,12 @@ struct content
 设置完毕后会回应一条结构体存储的所有信息。
 
 示例：
-> 读到内容：0x02 0x03 0x0A 0x14 0x00 0x08  
+> 读到内容：0x02 0x00 0x00 0x08  
 > 表示内容为：  
-> - 超时自动关机时间为2分钟  
-> - 速度触发SD卡记录  
-> - 触发记录速度为10km/h  
-> - 触发停止记录超时时间为20秒  
-> - 记录文件格式为VBO文件  
-> - 时区为东8区  
+> - 超时自动关机时间为2分钟
+> - 手动开关文件记录
+> - 记录文件格式为VBO文件
+> - 时区为东8区
 
 **自动关机超时时长**  
 autooff_timeout：配置id = 0x01  
@@ -203,53 +199,31 @@ autooff_timeout：配置id = 0x01
 > 设置不自动关机：0x01 0x00  
 > 设置超时10分钟自动关机：0x01 0x0A  
 
-**SD卡开始记录触发方式**  
-sdcard_record_trigger：配置id = 0x11  
-触发SD卡记录条件：0：关闭记录；1：手动开始记录；2：开机自动记录；3：速度触发记录  
-> 0：无论如何都不会触发记录SD卡  
-> 1：强制开启SD卡记录，限制条件：SD卡插入，GPS定位成功，关机后自动清0  
-> 2：开机自动SD卡记录，限制条件：SD卡插入，GPS定位成功，关机后不清0  
-> 3：速度触发SD卡记录，限制条件：SD卡插入，GPS定位成功，关机后不清0  
+**开始记录触发方式**  
+file_record_trigger：配置id = 0x11  
+触发文件记录条件：0：自动模式；1：手动模式；  
+> 0：GPS定位成功速度大于3km/h持续3s触发记录，GPS定位信号丢失超过10s或速度小于3km/h超过30s停止记录  
+> 1：GPS定位成功用户通过双击按键切换记录开关  
 
 示例：
-> 手动记录开始：写 0x11 0x01  
-> 手动记录停止：写 0x11 0x00  
-> 开机自动记录：写 0x11 0x02  
-> 速度触发记录：写 0x11 0x03  
+> 自动模式：写 0x11 0x00  
+> 手动模式：写 0x11 0x01  
 
-其中速度触发与sdcard_record_start_speed、sdcard_record_stop_timeout有关，用于设置3的触发条件
-
-**SD卡开始记录触发速度**  
-sdcard_record_start_speed：配置index = 0x12  
-设置触发SD卡记录的触发速度，范围为{5,200}
-
-示例：
-> 设置触发速度为10km/h：0x12 0x0A  
-> 设置触发速度为60km/h：0x12 0x3C  
-
-**SD卡停止记录超时时间**  
-sdcard_record_stop_timeout：配置index = 0x13  
-设置触发SD卡记录停止的超时时间，当速度小于1km/h的时间超过sdcard_record_stop_timeout后停止SD卡记录，范围为{10,200}
-
-示例：
-> 设置超时时间为15秒：0x13 0x0F  
-> 设置超时时间为120秒：0x13 0x78  
-
-**SD卡记录文件类型**  
-sdcard_record_filetype：配置index = 0x14  
+**记录文件类型**  
+file_record_filetype：配置index = 0x12  
 设置记录文件类型。0：VBO文件；1：RHF文件
 
 示例：
-> 设置记录成vbo文件：0x14 0x00  
-> 设置记录成rhf文件：0x14 0x01  
+> 设置记录成vbo文件：0x12 0x00  
+> 设置记录成rhf文件：0x12 0x01  
 
-**SD卡记录文件时区**  
-sdcard_record_timezone：配置index = 0x15  
+**记录文件时区**  
+file_record_timezone：配置index = 0x13  
 设置时区：范围为{-12,12}
 
 示例：
-> 设置成东八区：0x15 0x08  
-> 设置成西四区：0x15 0xFC  
+> 设置成东八区：0x13 0x08  
+> 设置成西四区：0x13 0xFC  
 
 **设备控制命令**  
 配置index = 0xA0  
@@ -276,15 +250,22 @@ typedef struct
 {
   uint8_t     battery_percent;       /* 电量百分比 */
   
+  /********** 模式状态 **********/
   uint8_t     charge_mode:1;         /* 充电模式? */
   uint8_t     connect_mode:1;        /* 蓝牙已连接？ */
   uint8_t     oad_mode:1;            /* OAD模式？ */
-  uint8_t     sdcard_mode:2;         /* SD卡模式？0：初始化失败；1：初始化成功；2：记录文件中；3：SD卡异常 */
-  
+  uint8_t     loopback_mode:1;       /* 回传模式? */
   uint8_t     :0;                    /* 位域分割 */
   
+  /********** 文件记录 **********/
+  uint8_t     record_hard:2;         /* 记录文件硬件？ 0：内建无操作文件系统；1：FLASH；2：SD卡 */
+  uint8_t     file_mode:2;           /* 文件模式？ 0：初始化失败；1：初始化成功；2：记录文件中；3：文件记录异常 */
+  uint8_t     :0;                    /* 位域分割 */
+  
+  /********** 系统锁 **********/
   uint8_t     gps_lock:1;            /* GPS锁 */
-  uint8_t     sdcard_lock:1;         /* SD卡锁 */
+  uint8_t     file_lock:1;           /* 文件操作锁 */
+  uint8_t     :0;
 } stuSYS;
 ```
 
@@ -298,34 +279,44 @@ typedef struct
 > 蓝牙是否连接。1：蓝牙已连接；0：蓝牙未连接（APP读应始终为1）  
 >  
 > *oad_mode*：  
-> 是否在固件升级。1：正在固件升级；0：不在固件升级
+> 是否在固件升级。1：正在固件升级；0：不在固件升级  
 >  
-> *sdcard_mode*：  
-> SD卡状态。0：没有检测到SD卡；1：已经检测到SD卡，但还没开始记录文件；2：SD卡正在记录文件；3：SD卡运行中出现异常
+> *loopback_mode*：  
+> 是否在回传模式。1：当前是回传模式；0：不在回传模式  
+>  
+> *record_hard*：  
+> 使用何种硬件记录数据。0：不做任何文件记录；1：FLASH记录；2：SD卡记录  
+>  
+> *file_mode*：  
+> 文件记录模式状态：0：初始化失败；1：初始化成功；2：记录文件中；3：文件记录异常
 >  
 > *gps_lock*：  
 > GPS解析任务锁（APP不用管）
 >  
-> *sdcard_lock*：  
-> SD卡记录锁（APP不用管）
+> *file_lock*：  
+> 文件记录锁（APP不用管）
 
 示例：
-> 读到如下数据：0x07 0x12 0x00  
+> 读到如下数据：0x07 0x02 0x05 0x00  
 > 表示内容为：  
 > - 电池电量为7%
 > - 不在充电
 > - 蓝牙已连接
 > - 不在固件升级
-> - SD卡正在记录文件
+> - 不在回传模式
+> - 使用FLASH记录数据
+> - 文件记录准备就绪
 
 示例：
-> 读到如下数据：0x39 0x0B 0x00  
+> 读到如下数据：0x64 0x03 0x0A 0x00  
 > 表示内容为：  
-> - 电池电量为57%
+> - 电池电量100%（不真实，在充电模式下始终显示100%）
 > - 正在充电
 > - 蓝牙已连接
 > - 不在固件升级
-> - 检测到SD卡但还没开始记录文件
+> - 不在回传模式
+> - 使用SD卡记录数据
+> - 正在记录数据
 
 *[link:位域](https://baike.baidu.com/item/%E4%BD%8D%E5%9F%9F/9215688?fr=aladdin)*
 
@@ -395,14 +386,14 @@ id = 0x11，可读可写
 示例：
 > 获取账号ID：  
 > 写：0x11 0x00  
-> 立即收到通知：0x01 0x04 0x01 0x12 0x00 0x00  
-> 或读到：0x01 0x04 0x01 0x12 0x00 0x00  
+> 立即收到通知：0x11 0x04 0x01 0x12 0x00 0x00  
+> 或读到：0x11 0x04 0x01 0x12 0x00 0x00  
 > 表示账号ID是4609  
 >  
 > 设置账号ID：  
-> 写：0x01 0x04 0x03 0x12 0x00 0x00  
-> 立即收到通知：0x01 0x04 0x03 0x12 0x00 0x00  
-> 或读到：0x01 0x04 0x03 0x12 0x00 0x00  
+> 写：0x11 0x04 0x03 0x12 0x00 0x00  
+> 立即收到通知：0x11 0x04 0x03 0x12 0x00 0x00  
+> 或读到：0x11 0x04 0x03 0x12 0x00 0x00  
 > 表示设置账号ID为4611  
 
 **三星定位卫星数目**  

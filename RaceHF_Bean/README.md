@@ -103,7 +103,7 @@ Byte Index | Content             | Type(bytes) | Comment
 7          | speed               | float(4)    | Always >= 0, unit:km/h
 11         | direction           | float(4)    | unit:degree
 15         | hdop                | float(4)    | Horizontal dilution of position
-19         | tracked satellites  | byte(1)     | The maximum is 12 without GSA, otherwise the maximum is 24
+19         | tracked satellites  | byte(1)     | 
 
 The C code is as follows:
 
@@ -165,20 +165,18 @@ Can be obtained from the second package：
 > Characteristic: AAA2  
 > Access: Write Without Response, Read, Notify  
 
-Set SD card starts recording trigger mode, SD card starts recording trigger speed, SD card stops recording timeout, SD card record file type and SD card record file time-zone.
+Set auto shutdown timeout duration, trigger mode of file recording start, file record type and file record file time-zone.
 
 The C language structure in the program is as follows:
 
 ```C
-struct content
+struct
 {
-  uint8_t   autooff_timeout;              /* auto shutdown timeout */
-  uint8_t   sdcard_record_trigger;        /* starts recording trigger mode */
-  uint8_t   sdcard_record_start_speed;    /* starts recording trigger speed */
-  uint8_t   sdcard_record_stop_timeout;   /* stops recording timeout */
-  uint8_t   sdcard_record_filetype;       /* file type */
-  int8_t    sdcard_record_timezone;       /* time-zone */
-};
+  uint8_t   autooff_timeout;       /* auto shutdown timeout */
+  uint8_t   file_record_trigger;   /* starts recording trigger mode */
+  uint8_t   file_record_filetype;  /* file type */
+  int8_t    file_record_timezone;  /* time-zone */
+} content;
 ```
 
 Read this characteristic, you can retrieve the content of all the configuration items listed above.  
@@ -186,13 +184,12 @@ You need to send the relevant configuration id to set the relevant item of this 
 Once set up, a notification with all content will be sent.  
 
 Example:
-> Read content: 0x02 0x03 0x0A 0x14 0x00 0x08  
+> Read content: 0x02 0x03 0x00 0x08  
 > indicates that the content is:  
-> - Auto shutdown timeout is 2 minutes  
-> - Trigger recording speed is 10km/h  
-> - Trigger stop recording timeout is 20 seconds  
-> - Record file format is VBO file  
-> - Time-zone is East 8th District  
+> - Auto shutdown timeout is 2 minutes
+> - Manual switch file record
+> - Record file format is VBO file
+> - Time-zone is East 8th District
 
 **Automatic shutdown timeout duration**  
 Autooff_timeout: configuration id = 0x01  
@@ -203,9 +200,9 @@ Example:
 > Settings do not automatically shutdown: 0x01 0x00  
 > Set timeout for 10 minutes to automatically shutdown: 0x01 0x0A  
 
-**SD card starts recording trigger mode**  
-Sdcard_record_trigger: configuration id = 0x11  
-Trigger SD card record conditions: 0: stop recording; 1: start recording manually; 2: start recording automatically;3: trigger recording by the speed
+**trigger mode of file recording start**  
+file_record_trigger: configuration id = 0x11  
+Trigger file record conditions: 0: Auto Mode; 1: Manual Mode;
 > 0: Recording SD card will not be triggered anyway.  
 > 1: The SD card record is forced to be opened. Limitations: SD card is inserted, GPS is successfully located, and 0 will be automatically cleaned after shutdown.  
 > 2: The SD card record is opened automatically. Limitations: SD card is inserted, GPS is successfully located, and 0 will not be automatically cleaned after shutdown.  
