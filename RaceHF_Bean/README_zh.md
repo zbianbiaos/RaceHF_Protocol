@@ -413,7 +413,7 @@ Id = 0x05, 只读
 Id = 0x81, 读写  
 字节数组类型，读取/配置PRO版本功能  
 内容部分第一个字节表示pro功能的index号
-| Index | Comment
+Index   | Comment
 ---     | ---
 1       | PRO版电量
 2       | PRO版GPS
