@@ -201,7 +201,6 @@ typedef struct
 ```C
 struct
 {
-  uint8_t   autooff_timeout;       /* 自动关机超时时长 */
   uint8_t   file_record_trigger;   /* 文件开始记录触发方式 */
   uint8_t   file_record_filetype;  /* 文件记录文件类型 */
   int8_t    file_record_timezone;  /* 文件记录文件时区 */
@@ -213,31 +212,21 @@ struct
 设置完毕后会回应一条结构体存储的所有信息。
 
 示例：
-> 读到内容：0x02 0x00 0x00 0x08  
+> 读到内容：0x00 0x00 0x08  
 > 表示内容为：  
-> - 超时自动关机时间为2分钟
-> - 手动开关文件记录
+> - 速度触发文件记录
 > - 记录文件格式为VBO文件
 > - 时区为东8区
 
-**自动关机超时时长**  
-autooff_timeout：配置id = 0x01  
-设置自动关机超时时长：单位为分钟，当速度小于10km/h且蓝牙没有连接触发自动关机超时计时器计时，数值范围为{0,255}  
-当设置为0时表示不自动关机
-
-示例：
-> 设置不自动关机：0x01 0x00  
-> 设置超时10分钟自动关机：0x01 0x0A  
-
 **开始记录触发方式**  
 file_record_trigger：配置id = 0x11  
-触发文件记录条件：0：自动模式；1：手动模式；  
+触发文件记录条件：0：速度触发；1：GPS触发；  
 > 0：GPS定位成功速度大于3km/h持续3s触发记录，GPS定位信号丢失超过10s或速度小于3km/h超过30s停止记录  
-> 1：GPS定位成功用户通过双击按键切换记录开关  
+> 1：GPS搜到信号开启记录，GPS信号丢失超过10s停止记录  
 
 示例：
-> 自动模式：写 0x11 0x00  
-> 手动模式：写 0x11 0x01  
+> 速度触发：写 0x11 0x00  
+> GPS触发：写 0x11 0x01  
 
 **记录文件类型**  
 file_record_filetype：配置index = 0x12  
@@ -259,9 +248,7 @@ file_record_timezone：配置index = 0x13
 配置index = 0xA0  
 
 示例：
-> 从OAD状态恢复：0xA0 0x01  
 > 设备关机：0xA0 0x02  
-> 设备重启：0xA0 0x03  
 
 ***
 
@@ -294,8 +281,11 @@ typedef struct
   
   /********** 系统锁 **********/
   uint8_t     gps_lock:1;            /* GPS锁 */
+  uint8_t     acc_lock:1;            /* 加速度锁 */
   uint8_t     file_lock:1;           /* 文件操作锁 */
   uint8_t     :0;
+  
+  /********** 调试 **********/
 } stuSYS;
 ```
 
@@ -322,6 +312,9 @@ typedef struct
 >  
 > *gps_lock*：  
 > GPS解析任务锁（APP不用管）
+>  
+> *acc_lock*：  
+> 加速度解析任务锁（APP不用管）
 >  
 > *file_lock*：  
 > 文件记录锁（APP不用管）
