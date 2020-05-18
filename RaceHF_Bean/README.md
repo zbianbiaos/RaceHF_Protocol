@@ -5,6 +5,7 @@
 **-> [Overview](#Overview)**  
 **-> [Development instructions](#Development-instructions)**  
 **-> [Positioning Data Protocol](#Positioning-Data-Protocol)**  
+**-> [Accel Data Protocol](#Accel-Data-Protocol)**  
 **-> [Mode Setting Protocol](#Mode-Setting-Protocol)**  
 **-> [System Status](#System-Status)**  
 **-> [Parameter Configuration](#Parameter-Configuration)**  
@@ -157,6 +158,37 @@ Can be obtained from the second package：
 > Number of locked satellites is: 0x12 => satellites: 18  
 
 **Reference code：[gps.c](gps.c)**
+
+***
+
+## Accel Data Protocol
+
+> Characteristic: AAA1  
+> Access: Notify  
+
+Accel data contains acceleration data obtained from IMU  
+The index of accel data is 0x21
+
+The C code is as follows:
+
+```C
+#pragma pack(1)
+typedef struct
+{
+  uint8_t     index;    // 0x21
+  float       x;
+  float       y;
+  float       z;
+  float       a;
+} stuAccelPack;
+#pragma pack()
+```
+
+### Description
+
+**X**, **Y**, **Z** are the G value of acceleration.   
+For example, receiving **Z** = 1.0 means that the acceleration is 1G on the Z-axis. The **A** represents the sum acceleration on xyz(sqrt(x^2+y^2+z^2)), the unit is G.  
+*The X-Y direction of the device is temporarily not show on the device, The X axis is the vertical down direction of the device*
 
 ***
 
